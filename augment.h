@@ -45,6 +45,9 @@ struct _augment {
 	uint8_t statIncrease[7];
 	uint16_t healthIncreases[12];
 	uint8_t isPerma;
+	
+	/* The ability to store more of specific items */
+	uint16_t specialStorageSpace[7];
 };
 
 typedef struct _augment augment;

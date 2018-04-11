@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include "augment.h"
 
+/**	Creates and returns an augment with the given attributes.
+ */
 augment *createAugment(char name[], char description[],
 	uint8_t type,
 	uint8_t condition,
@@ -11,7 +13,8 @@ augment *createAugment(char name[], char description[],
 	uint8_t numAbilities,
 	uint8_t statIncrease[7],
 	uint16_t healthIncreases[12],
-	uint8_t isPerma) {
+	uint8_t isPerma,
+	uint16_t specialStorageSpace[7]) {
 	
 	augment *newAug = malloc(sizeof(augment));
 	
@@ -29,6 +32,10 @@ augment *createAugment(char name[], char description[],
 	
 	for (uint8_t index = 0; index < 7; index++) {
 		newAug->statIncrease[index] = statIncrease[index];
+	};
+	
+	for (uint8_t index = 0; index < 7; index++) {
+		newAug->specialStorageSpace[index] = specialStorageSpace[index];
 	};
 	
 	for (uint8_t index = 0; index < 12; index++) {

@@ -29,7 +29,7 @@ uint8_t numInitialImplants_Legs = 2;
 uint8_t numInitialImplants_Feets = 2;
 	
 /** A "constructor" for an entity, will modify the entity to have the given
- * name, species, stats, proficiencies, and serial number based on the current number of items.
+ * name, species, stats, and proficiencies.
  */
 entity *createEntity(char name[], char species[],
 	char description[],
@@ -416,6 +416,73 @@ uint8_t getIndexOfItem(entity *being, uint8_t type) {
 	return 0;
 }
 
+/** Puts an item into the entity's hand, depending on which hand is designated.
+ * 	Returns a 1 if successful, 0 else.
+ */
+uint8_t putItemInHand(entity *being, item *thing, uint8_t isLeft) {
+	
+	if (!isLeft) {
+		if (being->rightHand == NULL) {
+			being->rightHand = thing;
+			return 1;
+		}
+	}
+	else {
+		if (being->leftHand == NULL) {
+			being->leftHand = thing;
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+/** Removes an item from an entity's hand and returns that item.
+ */
+item *removeItemInHand(entity *being, uint8_t isLeft) {
+	
+	item *inHand = NULL;
+	
+	if (!isLeft) {
+		if (being->rightHand != NULL) {
+			inHand = being->rightHand;
+			being->rightHand = NULL;
+		}
+	}
+	else {
+		if (being->leftHand != NULL) {
+			inHand = being->leftHand;
+			being->leftHand = NULL;
+		}
+	}
+	
+	return inHand;
+}
+
+/** Given an item and which hand, the item is put in the designated hand
+ * 	and returns the old item in the hand.
+ */
+item *swapItemFromHand(entity *being, item *thing, uint8_t isLeft) {
+	
+	item *inHand = NULL;
+	
+	if (!isLeft) {
+		if (being->rightHand != NULL) {
+			inHand = being->rightHand;
+			being->rightHand = thing;
+		}
+	}
+	else {
+		if (being->leftHand != NULL) {
+			inHand = being->leftHand;
+			being->leftHand = thing;
+		}
+	}
+	
+	return inHand;
+	
+}
+
 /**	Adds a single augment to the creature if the slot is empty or if the max
  * 	number of augments hasn't been reached.
  *  isLefl, 0 == right, 1 == left.
@@ -489,6 +556,8 @@ uint8_t putSingleAugemnt(entity *being, augment *aug, uint8_t isLeft) {
 	return 0;
 }
 
+/** Gets the max number of augments of a single type.
+ */
 uint8_t getMaxAugmentsByType(entity *being, uint8_t type, uint8_t isLeft) {
 	if (type == 3) { 
 		return being->maxNumImplants_Cranial;
@@ -529,6 +598,8 @@ uint8_t getMaxAugmentsByType(entity *being, uint8_t type, uint8_t isLeft) {
 	return 0;
 }
 
+/** Finds how many augments there are of a given type in a augment array.
+ */
 uint8_t getCurrNumberAugmentsByType(augment *augArray[30], uint8_t numAugs, uint8_t type) {
 	
 	uint8_t toReturn;
@@ -570,9 +641,11 @@ uint8_t doesHaveAugmentByName(augment *augArray[30], uint8_t numAugs, char name[
 	return 0;
 }
 
-augment *removeAugment(entity *being, char name[]) {
+/** Removes an augment by the given name.
+ */
+augment *removeAugment(entity *being, char name[], uint8_t onLeft) {
 	
-	augment *augToReturn;
+	augment *augToReturn = NULL;
 	
 	uint8_t indexOfAugment;
 	
@@ -585,22 +658,25 @@ augment *removeAugment(entity *being, char name[]) {
 		being->numCenterImplants--;
 	}
 	
-	indexOfAugment = doesHaveAugmentByName(being->rightImplants, being->numRightImplants, name);
-	
-	if (indexOfAugment) {
-		indexOfAugment--;
-		augToReturn = being->rightImplants[indexOfAugment];
-		being->rightImplants[indexOfAugment] = being->rightImplants[being->numRightImplants];
-		being->numRightImplants--;
+	if (!onLeft) {
+		
+		indexOfAugment = doesHaveAugmentByName(being->rightImplants, being->numRightImplants, name);
+		if (indexOfAugment) {
+			indexOfAugment--;
+			augToReturn = being->rightImplants[indexOfAugment];
+			being->rightImplants[indexOfAugment] = being->rightImplants[being->numRightImplants];
+			being->numRightImplants--;
+		}
 	}
-	
-	indexOfAugment = doesHaveAugmentByName(being->leftImplants, being->numLeftImplants, name);
-	
-	if (indexOfAugment) {
-		indexOfAugment--;
-		augToReturn = being->leftImplants[indexOfAugment];
-		being->leftImplants[indexOfAugment] = being->leftImplants[being->numLeftImplants];
-		being->numLeftImplants--;
+	else {
+		
+		indexOfAugment = doesHaveAugmentByName(being->leftImplants, being->numLeftImplants, name);
+		if (indexOfAugment) {
+			indexOfAugment--;
+			augToReturn = being->leftImplants[indexOfAugment];
+			being->leftImplants[indexOfAugment] = being->leftImplants[being->numLeftImplants];
+			being->numLeftImplants--;
+		}
 	}
 	
 	return augToReturn;

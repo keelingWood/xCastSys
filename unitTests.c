@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
 	uint16_t itemDamageTestArray[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 	uint16_t testSpecialHoldingArray[7] = {0, 1, 2, 3, 4, 5, 6};
 	uint8_t itemAttractivenessArray[5] = {0, 1, 2, 3, 4};
+	uint16_t augmentHealthIncreases[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 	
 	
 	item *otherItem = createOtherItem("other", "this is an other item", 100, 69, 69, 3, 4, 5);
@@ -31,6 +32,11 @@ int main(int argc, char* argv[]) {
 	item *clothesItem = createWearableItem("hat", "a wearable test", 4, 100, 69, 69, 2, 3, 4, itemDamageTestArray, itemEffectTestString, 3, itemAttractivenessArray, 5, testSpecialHoldingArray);
 	item *weaponItem = createHoldableItem("sharp stick", "a fancy sharpened stick", 13, 43, 100, 100, 1, 50, 2, itemDamageTestArray, itemEffectTestString, 3, 10, 3, 6, 8, 1, 1, "none", 0);
 	item *secondClothesItem = itemDeepCopy(clothesItem);
+	augment *augOne = createAugment("sharp thumb tact", "a sharp thumb tact with glue", 10, 30, itemEffectTestString, 3, testSpecialHoldingArray, augmentHealthIncreases, 1, testSpecialHoldingArray);
+	augment *augTwo = createAugment("dull thumb tact", "a dull thumb tact with glue", 10, 30, itemEffectTestString, 3, testSpecialHoldingArray, augmentHealthIncreases, 1, testSpecialHoldingArray);
+	augment *augThree = createAugment("purple pompom", "a purple fluffy pompom", 3, 30, itemEffectTestString, 3, testSpecialHoldingArray, augmentHealthIncreases, 1, testSpecialHoldingArray);
+	augment *augFour = createAugment("red pompom", "a red pompom", 4, 30, itemEffectTestString, 3, testSpecialHoldingArray, augmentHealthIncreases, 1, testSpecialHoldingArray);
+	
 	
 	if (testItemOtherCreation(otherItem) != 0) {
 		printf("Other item creation failed.\n");
@@ -56,8 +62,11 @@ int main(int argc, char* argv[]) {
 	if (checkEntityBagMethods(being, clothesItem, foodItem) != 0) {
 		printf("Entity bag methods failed.\n");
 	}
-	if (checkEntityEquipmentMethods(being, clothesItem, secondClothesItem) != 0) {
+	if (checkEntityEquipmentMethods(being, clothesItem, secondClothesItem, weaponItem) != 0) {
 		printf("Entity equipment methods failed.\n");
+	}
+	if (testAugmentCreationAndEntityMethods(augOne, augTwo, augThree, augFour, being) != 0) {
+		printf("Augment creation and equiping methods failed.\n");
 	}
 	printf("Tests done.\n");
 }
@@ -342,7 +351,7 @@ uint8_t checkEntityBagMethods(entity *being, item *thing, item *otherThing) {
 	return status;
 };
 
-uint8_t checkEntityEquipmentMethods(entity *being, item *thingOne, item *thingTwo) {
+uint8_t checkEntityEquipmentMethods(entity *being, item *thingOne, item *thingTwo, item *holdable) {
 	
 	uint8_t status = 0;
 	
@@ -361,5 +370,69 @@ uint8_t checkEntityEquipmentMethods(entity *being, item *thingOne, item *thingTw
 		status++;
 	}
 	
+	
+	if (removeItemInHand(being, 1) != NULL) {
+		printf("Removing item in hand not null or item dequip failed with no items.\n");
+		status++;
+	}
+	
+	if (putItemInHand(being, holdable, 1) != 1) {
+		printf("Putting item in hand failed with no items in slot before hand.\n");
+		status++;
+	}
+	
+	if (removeItemInHand(being, 1) != holdable) {
+		printf("Removing existing item from hand failed.\n");
+		status++;
+	}
+	
+	
 	return status;
 };
+
+uint8_t testAugmentCreationAndEntityMethods(augment *augOne, augment *augTwo, augment *augThree, augment *augFour, entity *being) {
+	
+	uint8_t status = 0;
+	
+	if (strcmp(augOne->name, "sharp thumb tact") != 0) {
+		printf("Augment creation method failed.\n");
+		status++;
+	}
+	if (removeAugment(being, "sharp thumb tact", 0) != NULL) {
+		printf("Entity getting an augment with no other augments failed.\n");
+	}
+	if (putSingleAugemnt(being, augOne, 1) != 1) {
+		printf("Putting an augment with no prior augment failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augTwo, 1) != 0) {
+		printf("Putting augment in full slot failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augTwo, 0) != 1) {
+		printf("Putting augment in empty slot after installing other augments failed.\n");
+		status++;
+	}
+	if (removeAugment(being, "sharp thumb tact", 0) != NULL) {
+		printf("Removing augment from wrong side failed.\n");
+		status++;
+	}
+	if (removeAugment(being, "sharp thumb tact", 1) != augOne) {
+		printf("Correct augment removal failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augThree, 3) != 1) {
+		printf("Insertion of central augment failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augThree, 3) != 0) {
+		printf("Insertion of duplicate central augment failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augFour, 3) != 1) {
+		printf("Insertion of addional central augment failed.\n");
+		status++;
+	}
+	
+	return status;
+}

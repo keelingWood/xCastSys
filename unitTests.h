@@ -14,6 +14,7 @@ uint8_t testItemAmmunitionCreation(item *ammo);
 uint8_t testItemClothesCreation(item *hat);
 uint8_t testItemHoldableCreation(item *weapon);
 uint8_t checkEntityBagMethods(entity *being, item *thing, item *otherThing);
-uint8_t checkEntityEquipmentMethods(entity *being, item *thingOne, item *thingTwo);
+uint8_t checkEntityEquipmentMethods(entity *being, item *thingOne, item *thingTwo, item *holdable);
+uint8_t testAugmentCreationAndEntityMethods(augment *augOne, augment *augTwo, augment *augThree, augment *augFour, entity *being);
 
 #endif

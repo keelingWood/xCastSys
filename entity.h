@@ -182,6 +182,10 @@ item *deEquipItemAt(entity *being, uint8_t type);
 item *swapItem(entity *being, item *thing);
 
 uint8_t getIndexOfItem(entity *being, uint8_t type);
+
+item *removeItemInHand(entity *being, uint8_t isLeft);
+
+uint8_t putItemInHand(entity *being, item *thing, uint8_t isLeft);
 	
 uint8_t putSingleAugemnt(entity *being, augment *aug, uint8_t isLeft);
 
@@ -193,5 +197,5 @@ uint8_t doesHaveAugmentOfType(augment *augArray[30], uint8_t numAugs, uint8_t ty
 
 uint8_t doesHaveAugmentByName(augment *augArray[30], uint8_t numAugs, char name[]);
 	
-augment *removeAugment(entity *being, char name[]);
+augment *removeAugment(entity *being, char name[], uint8_t onLeft);
 #endif
