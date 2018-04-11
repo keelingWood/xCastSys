@@ -31,7 +31,7 @@ uint8_t numInitialImplants_Feets = 2;
 /** A "constructor" for an entity, will modify the entity to have the given
  * name, species, stats, and proficiencies.
  */
-entity *createEntity(char name[], char species[],
+entity *createEntity(char name[], uint8_t mass, uint8_t height, char species[],
 	char description[],
 	uint8_t strength,
 	uint8_t finesse,

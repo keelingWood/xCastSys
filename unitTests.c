@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
 	strcpy(testString[0], "ives is my name");
 	strcpy(testString[1], "dive is my name");
 	strcpy(testString[2], "lies is my name");
-	entity *being = createEntity("ives wood", "human female", "a test subject", 7, 7, 7, 7, 7, 7, 7, testString, 3);
+	entity *being = createEntity("ives wood", 150, 150, "human female", "a test subject", 7, 7, 7, 7, 7, 7, 7, testString, 3);
 
 	if (testEntityCreation(being) != 0) {
 		printf("Entity Creation test failed.\n");
@@ -431,6 +431,10 @@ uint8_t testAugmentCreationAndEntityMethods(augment *augOne, augment *augTwo, au
 	}
 	if (putSingleAugemnt(being, augFour, 3) != 1) {
 		printf("Insertion of addional central augment failed.\n");
+		status++;
+	}
+	if (putSingleAugemnt(being, augFour, 3) != 0) {
+		printf("Insertion of duplicate non-structual augment failed.\n");
 		status++;
 	}
 	

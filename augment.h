@@ -52,4 +52,14 @@ struct _augment {
 
 typedef struct _augment augment;
 
+augment *createAugment(char name[], char description[],
+	uint8_t type,
+	uint8_t condition,
+	char abilities[][30],
+	uint8_t numAbilities,
+	uint8_t statIncrease[7],
+	uint16_t healthIncreases[12],
+	uint8_t isPerma,
+	uint16_t specialStorageSpace[7]);
+
 #endif

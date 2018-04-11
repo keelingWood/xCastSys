@@ -10,6 +10,9 @@ struct _entity {
 	
 	/* The name of this entity */
 	char name[42];
+	/* The mass and height of this entity in kg and cm */
+	uint16_t mass;
+	uint16_t height;
 	
 	/* A physical description of this entity */
 	char desc[100];
@@ -135,7 +138,7 @@ struct _entity {
 
 typedef struct _entity entity;
 
-entity *createEntity(char name[], char species[],
+entity *createEntity(char name[], uint8_t mass, uint8_t height, char species[],
 	char description[],
 	uint8_t strength,
 	uint8_t finesse,
